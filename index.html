@@ -392,24 +392,25 @@
 
         const nickname = sessionStorage.getItem("nickname");
 
-        const finishedAt = new Date();
+        const finishedAt = new Date().toISOString();
 
-        const result = {
-          employeeId: employeeId,
-          nickname: nickname,
-          score: score,
-          correctCount: 0,
-          startedAt: startedAt,
-          finishedAt: finishedAt,
-        };
+        const url =
+          API_URL +
+          "?mode=save" +
+          "&employeeId=" +
+          encodeURIComponent(employeeId) +
+          "&nickname=" +
+          encodeURIComponent(nickname) +
+          "&score=" +
+          score +
+          "&correctCount=" +
+          correctCount +
+          "&startedAt=" +
+          encodeURIComponent(startedAt) +
+          "&finishedAt=" +
+          encodeURIComponent(finishedAt);
 
-        await fetch(API_URL, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(result),
-        });
+        await fetch(url);
       }
 
       async function showResultRanking() {
