@@ -130,6 +130,12 @@
       .choice-button:hover {
         background: #dff5d6;
       }
+
+      .my-rank {
+        background: #eefce8;
+        border-radius: 8px;
+        font-weight: bold;
+      }
     </style>
   </head>
 
@@ -153,7 +159,7 @@
       </div>
 
       <div class="card" id="rankingCard">
-        <h2 class="ranking-title">🏆 Ranking 🏆</h2>
+        <h2 class="ranking-title">🏆 トップ５ 🏆</h2>
 
         <div id="ranking">読み込み中...</div>
       </div>
@@ -215,9 +221,19 @@
           style="font-size: 1.3rem; margin-top: 20px; text-align: center"
         ></div>
 
+        <div
+          id="finalPosition"
+          style="
+            font-size: 1.4rem;
+            margin-top: 15px;
+            text-align: center;
+            font-weight: bold;
+          "
+        ></div>
+
         <hr style="margin: 30px 0" />
 
-        <h2 class="ranking-title">🏆 Ranking 🏆</h2>
+        <h2 class="ranking-title">🏆 トップ５ 🏆</h2>
 
         <div id="resultRanking"></div>
 
@@ -387,7 +403,7 @@
         return "📚 品質ビギナー";
       }
 
-      async function saveResult() {
+      function saveResult() {
         const employeeId = sessionStorage.getItem("employeeId");
 
         const nickname = sessionStorage.getItem("nickname");
@@ -410,13 +426,17 @@
           "&finishedAt=" +
           encodeURIComponent(finishedAt);
 
-        await fetch(url);
+        const img = new Image();
+
+        img.src = url;
       }
 
       async function showResultRanking() {
         const response = await fetch(API_URL + "?mode=ranking");
 
         const ranking = await response.json();
+
+        const myNickname = sessionStorage.getItem("nickname");
 
         let html = "";
 
@@ -425,18 +445,23 @@
         ranking.forEach((item, index) => {
           const rankLabel = index < 3 ? medals[index] : index + 1 + "位";
 
-          html += `
-              <div class="rank-row">
-                  <span class="rank-name">
-                      ${rankLabel}
-                      ${item.nickname}
-                  </span>
+          const myEmployeeId = sessionStorage.getItem("employeeId");
 
-                  <span class="rank-score">
-                      ${item.score}
-                  </span>
-              </div>
-          `;
+          const isMe = item.employeeId === myEmployeeId;
+
+          html += `
+          <div class="rank-row ${isMe ? "my-rank" : ""}">
+              <span class="rank-name">
+                  ${rankLabel}
+                  ${item.nickname}
+                  ${isMe ? " ← あなた" : ""}
+              </span>
+
+              <span class="rank-score">
+                  ${item.score}
+              </span>
+          </div>
+      `;
         });
 
         document.getElementById("resultRanking").innerHTML = html;
@@ -509,11 +534,15 @@
         updateProgressBar();
 
         if (currentQuestionIndex >= allQuestions.length) {
-          try {
-            await saveResult();
-          } catch (error) {
-            console.error(error);
-          }
+          //          try {
+          //            await saveResult();
+          //          } catch (error) {
+          //            console.error(error);
+          //          }
+
+          saveResult();
+
+          await new Promise((resolve) => setTimeout(resolve, 1000));
 
           document.getElementById("quizScreen").style.display = "none";
 
@@ -529,6 +558,7 @@
             correctCount + "問正解";
 
           showResultRanking();
+          showMyRank();
 
           return;
         }
@@ -542,6 +572,28 @@
 
         showChoices(allQuestions[currentQuestionIndex]);
       });
+
+      async function showMyRank() {
+        const employeeId = sessionStorage.getItem("employeeId");
+
+        const finishedAt = new Date().toISOString();
+
+        const response = await fetch(
+          API_URL +
+            "?mode=rank" +
+            "&employeeId=" +
+            encodeURIComponent(employeeId) +
+            "&score=" +
+            score +
+            "&finishedAt=" +
+            encodeURIComponent(finishedAt),
+        );
+
+        const result = await response.json();
+
+        document.getElementById("finalPosition").innerText =
+          "現在 " + result.rank + "位";
+      }
     </script>
   </body>
 </html>
