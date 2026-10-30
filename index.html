@@ -177,6 +177,22 @@ body{
 
     </div>
 
+    <div id="quizScreen" class="card" style="display:none;">
+
+        <div id="progressBar"
+             style="
+                text-align:center;
+                font-size:1.3rem;
+                margin-bottom:20px;
+             ">
+        </div>
+    
+        <h2 id="questionText">
+            問題表示エリア
+        </h2>
+    
+    </div>
+    
     <div class="footer">
         Quality Quiz 2026
     </div>
@@ -279,7 +295,28 @@ function startQuiz(){
         nickname
     );
 
-    alert("次はクイズ画面へ進みます");
+    document.getElementById(
+        "startCard"
+    ).style.display = "none";
+    
+    document.getElementById(
+        "rankingCard"
+    ).style.display = "none";
+    
+    document.getElementById(
+        "quizScreen"
+    ).style.display = "block";
+    
+    document.getElementById(
+        "progressBar"
+    ).innerText =
+        "■□□□□□□□□□□□□□□□□□□□";
+    
+    document.getElementById(
+        "questionText"
+    ).innerText =
+        "ここに問題を表示します";
+
 }
 
 </script>
