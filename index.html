@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>品質クイズ 2026</title>
+
+<style>
+
+:root{
+    --qa-green:#7ED957;
+    --qa-dark:#2E4A32;
+    --qa-light:#F5FFF0;
+}
+
+body{
+    margin:0;
+    font-family:"Segoe UI",sans-serif;
+    background:linear-gradient(
+        180deg,
+        #ffffff 0%,
+        #f6fff4 100%
+    );
+    color:#333;
+}
+
+.container{
+    max-width:700px;
+    margin:auto;
+    padding:20px;
+}
+
+.title{
+    text-align:center;
+    margin-top:40px;
+}
+
+.title h1{
+    margin:0;
+    color:var(--qa-dark);
+    font-size:2.2rem;
+}
+
+.title p{
+    color:#777;
+    margin-top:10px;
+}
+
+.card{
+    background:white;
+    border-radius:20px;
+    padding:24px;
+    margin-top:25px;
+    box-shadow:0 5px 20px rgba(0,0,0,0.08);
+}
+
+.label{
+    display:block;
+    margin-bottom:8px;
+    color:#444;
+    font-weight:bold;
+}
+
+.input{
+    width:100%;
+    box-sizing:border-box;
+    padding:12px;
+    border:2px solid #dfe7dc;
+    border-radius:12px;
+    font-size:1rem;
+    margin-bottom:18px;
+}
+
+.input:focus{
+    outline:none;
+    border-color:var(--qa-green);
+}
+
+.start-button{
+    width:100%;
+    border:none;
+    border-radius:14px;
+    padding:15px;
+    font-size:1.1rem;
+    cursor:pointer;
+    color:white;
+    background:linear-gradient(
+        90deg,
+        #76e45a,
+        #52c143
+    );
+}
+
+.start-button:hover{
+    box-shadow:0 0 18px rgba(126,217,87,0.7);
+}
+
+.ranking-title{
+    text-align:center;
+    margin-bottom:20px;
+    color:var(--qa-dark);
+}
+
+.rank-row{
+    display:flex;
+    justify-content:space-between;
+    padding:10px 0;
+    border-bottom:1px solid #eee;
+}
+
+.rank-name{
+    font-weight:600;
+}
+
+.rank-score{
+    color:#666;
+}
+
+.footer{
+    text-align:center;
+    margin-top:20px;
+    color:#999;
+    font-size:0.9rem;
+}
+
+</style>
+</head>
+<body>
+
+<div class="container">
+
+    <div class="title">
+        <h1>✨ 品質クイズ 2026 ✨</h1>
+        <p>品質知識に挑戦しよう</p>
+    </div>
+
+    <div class="card">
+
+        <label class="label">
+            社員番号
+        </label>
+
+        <input
+            id="employeeId"
+            class="input"
+            type="text"
+        >
+
+        <label class="label">
+            ニックネーム
+        </label>
+
+        <input
+            id="nickname"
+            class="input"
+            type="text"
+        >
+
+        <button
+            class="start-button"
+            onclick="startQuiz()">
+            クイズ開始
+        </button>
+
+    </div>
+
+    <div class="card">
+
+        <h2 class="ranking-title">
+            🏆 Ranking 🏆
+        </h2>
+
+        <div id="ranking">
+            読み込み中...
+        </div>
+
+    </div>
+
+    <div class="footer">
+        Quality Quiz 2026
+    </div>
+
+</div>
+
+<script>
+
+const API_URL =
+"https://script.google.com/macros/s/AKfycbxO2uom691H4-LJO6eIUxV440FRb5QM1JmQU0VF9YlzfeztqOr665lZSnuh_eXo69Y-ug/exec";
+
+window.onload = async function () {
+
+    try {
+
+        const response =
+            await fetch(API_URL + "?mode=ranking");
+
+        const ranking =
+            await response.json();
+
+        renderRanking(ranking);
+
+    }
+    catch(error){
+
+        console.error(error);
+
+        document.getElementById("ranking")
+            .innerHTML =
+            "ランキング取得失敗";
+    }
+};
+
+function renderRanking(ranking){
+
+    const medals = [
+        "🥇",
+        "🥈",
+        "🥉"
+    ];
+
+    let html = "";
+
+    ranking.forEach((item,index)=>{
+
+        let rankLabel;
+
+        if(index < 3){
+            rankLabel =
+                medals[index] +
+                " " +
+                item.nickname;
+        }
+        else{
+            rankLabel =
+                (index + 1) +
+                "位 " +
+                item.nickname;
+        }
+
+        html += `
+            <div class="rank-row">
+                <span class="rank-name">
+                    ${rankLabel}
+                </span>
+                <span class="rank-score">
+                    ${item.score}
+                </span>
+            </div>
+        `;
+    });
+
+    document.getElementById("ranking")
+        .innerHTML = html;
+}
+
+function startQuiz(){
+
+    const employeeId =
+        document.getElementById("employeeId").value.trim();
+
+    const nickname =
+        document.getElementById("nickname").value.trim();
+
+    if(!employeeId || !nickname){
+
+        alert("社員番号とニックネームを入力してください");
+
+        return;
+    }
+
+    sessionStorage.setItem(
+        "employeeId",
+        employeeId
+    );
+
+    sessionStorage.setItem(
+        "nickname",
+        nickname
+    );
+
+    alert("次はクイズ画面へ進みます");
+}
+
+</script>
+
+</body>
+</html>
