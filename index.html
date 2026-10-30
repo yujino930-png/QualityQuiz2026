@@ -1,309 +1,289 @@
 <!doctype html>
 <html lang="ja">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>品質クイズ 2026</title>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- =====================================================
+  <title>品質クイズ 2026</title>
+
+  <!-- =====================================================
          ★★★ クイズの設定はここだけ変更 ★★★
          count  = 出題する問題数
          points = 1問正解したときの得点
-         現在の満点：10×3 + 6×5 + 4×10 = 100点
+         現在の満点：6×5 + 2×10 + 2×25 = 100点
          ※称号の判定基準（90/80/60点）は固定です。
          ===================================================== -->
-    <script>
-      const QUIZ_CONFIG = {
-        "初級": { count: 6, points: 5 },
-        "中級": { count: 2, points: 10 },
-        "上級": { count: 2, points: 25 },
-      };
-    </script>
-    <!-- ================= 設定ここまで ================= -->
+  <script>
+    const QUIZ_CONFIG = {
+      "初級": { count: 6, points: 5 },
+      "中級": { count: 2, points: 10 },
+      "上級": { count: 2, points: 25 },
+    };
+  </script>
+  <!-- ================= 設定ここまで ================= -->
 
-    <style>
-      :root {
-        --qa-green: #7ed957;
-        --qa-dark: #2e4a32;
-        --qa-light: #f5fff0;
-      }
+  <style>
+    :root {
+      --qa-green: #7ed957;
+      --qa-dark: #2e4a32;
+      --qa-light: #f5fff0;
+    }
 
-      body {
-        margin: 0;
-        font-family: "Segoe UI", sans-serif;
-        background: linear-gradient(180deg, #ffffff 0%, #f6fff4 100%);
-        color: #333;
-      }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", sans-serif;
+      background: linear-gradient(180deg, #ffffff 0%, #f6fff4 100%);
+      color: #333;
+    }
 
-      .container {
-        max-width: 700px;
-        margin: auto;
-        padding: 20px;
-      }
+    .container {
+      max-width: 700px;
+      margin: auto;
+      padding: 20px;
+    }
 
-      .title {
-        text-align: center;
-        margin-top: 40px;
-      }
+    .title {
+      text-align: center;
+      margin-top: 40px;
+    }
 
-      .title h1 {
-        margin: 0;
-        color: var(--qa-dark);
-        font-size: 2.2rem;
-      }
+    .title h1 {
+      margin: 0;
+      color: var(--qa-dark);
+      font-size: 2.2rem;
+    }
 
-      .title p {
-        color: #777;
-        margin-top: 10px;
-      }
+    .title p {
+      color: #777;
+      margin-top: 10px;
+    }
 
-      .card {
-        background: white;
-        border-radius: 20px;
-        padding: 24px;
-        margin-top: 25px;
-        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-      }
+    .card {
+      background: white;
+      border-radius: 20px;
+      padding: 24px;
+      margin-top: 25px;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+    }
 
-      .label {
-        display: block;
-        margin-bottom: 8px;
-        color: #444;
-        font-weight: bold;
-      }
+    .label {
+      display: block;
+      margin-bottom: 8px;
+      color: #444;
+      font-weight: bold;
+    }
 
-      .input {
-        width: 100%;
-        box-sizing: border-box;
-        padding: 12px;
-        border: 2px solid #dfe7dc;
-        border-radius: 12px;
-        font-size: 1rem;
-        margin-bottom: 18px;
-      }
+    .input {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 12px;
+      border: 2px solid #dfe7dc;
+      border-radius: 12px;
+      font-size: 1rem;
+      margin-bottom: 18px;
+    }
 
-      .input:focus {
-        outline: none;
-        border-color: var(--qa-green);
-      }
+    .input:focus {
+      outline: none;
+      border-color: var(--qa-green);
+    }
 
-      .start-button {
-        width: 100%;
-        border: none;
-        border-radius: 14px;
-        padding: 15px;
-        font-size: 1.1rem;
-        cursor: pointer;
-        color: white;
-        background: linear-gradient(90deg, #76e45a, #52c143);
-      }
+    .start-button {
+      width: 100%;
+      border: none;
+      border-radius: 14px;
+      padding: 15px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      color: white;
+      background: linear-gradient(90deg, #76e45a, #52c143);
+    }
 
-      .start-button:hover {
-        box-shadow: 0 0 18px rgba(126, 217, 87, 0.7);
-      }
+    .start-button:hover {
+      box-shadow: 0 0 18px rgba(126, 217, 87, 0.7);
+    }
 
-      .ranking-title {
-        text-align: center;
-        margin-bottom: 20px;
-        color: var(--qa-dark);
-      }
+    .ranking-title {
+      text-align: center;
+      margin-bottom: 20px;
+      color: var(--qa-dark);
+    }
 
-      .rank-row {
-        display: flex;
-        justify-content: space-between;
-        padding: 10px 0;
-        border-bottom: 1px solid #eee;
-      }
+    .rank-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid #eee;
+    }
 
-      .rank-name {
-        font-weight: 600;
-      }
+    .rank-name {
+      font-weight: 600;
+    }
 
-      .rank-score {
-        color: #666;
-      }
+    .rank-score {
+      color: #666;
+    }
 
-      .footer {
-        text-align: center;
-        margin-top: 20px;
-        color: #999;
-        font-size: 0.9rem;
-      }
+    .footer {
+      text-align: center;
+      margin-top: 20px;
+      color: #999;
+      font-size: 0.9rem;
+    }
 
-      .choice-button {
-        width: 100%;
-        margin-top: 12px;
-        padding: 16px;
-        border: none;
-        border-radius: 12px;
-        background: #f4f7f4;
-        cursor: pointer;
-        font-size: 1rem;
-        text-align: left;
-      }
+    .choice-button {
+      width: 100%;
+      margin-top: 12px;
+      padding: 16px;
+      border: none;
+      border-radius: 12px;
+      background: #f4f7f4;
+      cursor: pointer;
+      font-size: 1rem;
+      text-align: left;
+    }
 
-      .choice-button:hover {
-        background: #dff5d6;
-      }
+    .choice-button:hover {
+      background: #dff5d6;
+    }
 
-      .my-rank {
-        background: #eefce8;
-        border-radius: 8px;
-        font-weight: bold;
-      }
-    </style>
-  </head>
+    .my-rank {
+      background: #eefce8;
+      border-radius: 8px;
+      font-weight: bold;
+    }
+  </style>
+</head>
 
-  <body>
-    <div class="container">
-      <div class="title">
-        <h1>✨ 品質クイズ 2026 ✨</h1>
-        <p>品質知識に挑戦しよう</p>
-      </div>
+<body>
+  <div class="container">
+    <div class="title">
+      <h1>✨ 品質クイズ 2026 ✨</h1>
+      <p>品質知識に挑戦しよう</p>
+    </div>
 
-      <div class="card" id="startCard">
-        <label class="label"> 社員番号 </label>
+    <div class="card" id="startCard">
+      <label class="label"> 社員番号 </label>
 
-        <input id="employeeId" class="input" type="text" />
+      <input id="employeeId" class="input" type="text" />
 
-        <label class="label"> ニックネーム </label>
+      <label class="label"> ニックネーム </label>
 
-        <input id="nickname" class="input" type="text" />
+      <input id="nickname" class="input" type="text" />
 
-        <button class="start-button" onclick="startQuiz()">クイズ開始</button>
-      </div>
+      <button class="start-button" onclick="startQuiz()">クイズ開始</button>
+    </div>
 
-      <div class="card" id="rankingCard">
-        <h2 class="ranking-title">🏆 トップ５ 🏆</h2>
+    <div class="card" id="rankingCard">
+      <h2 class="ranking-title">🏆 トップ５ 🏆</h2>
 
-        <div id="ranking">読み込み中...</div>
-      </div>
+      <div id="ranking">読み込み中...</div>
+    </div>
 
-      <div id="quizScreen" class="card" style="display: none">
-        <div
-          id="questionNumber"
-          style="text-align: center; margin-bottom: 10px; font-weight: bold"
-        ></div>
+    <div id="quizScreen" class="card" style="display: none">
+      <div id="questionNumber" style="text-align: center; margin-bottom: 10px; font-weight: bold"></div>
 
-        <div
-          style="
+      <div style="
             width: 100%;
             height: 18px;
             background: #e5e5e5;
             border-radius: 9px;
             overflow: hidden;
             margin-bottom: 20px;
-          "
-        >
-          <div
-            id="progressBar"
-            style="
+          ">
+        <div id="progressBar" style="
               width: 0%;
               height: 100%;
               background: #7ed957;
               transition: 0.3s;
-            "
-          ></div>
-        </div>
-
-        <h2 id="questionText">問題を読み込んでいます...</h2>
-
-        <div id="choicesContainer"></div>
+            "></div>
       </div>
 
-      <div id="answerArea" style="display: none">
-        <h2 id="answerTitle"></h2>
+      <h2 id="questionText">問題を読み込んでいます...</h2>
 
-        <div id="answerText" style="margin-top: 15px; line-height: 1.8"></div>
+      <div id="choicesContainer"></div>
+    </div>
 
-        <button id="nextButton" class="start-button" style="margin-top: 20px">
-          次へ
-        </button>
+    <div id="answerArea" style="display: none">
+      <h2 id="answerTitle"></h2>
+
+      <div id="answerText" style="margin-top: 15px; line-height: 1.8"></div>
+
+      <button id="nextButton" class="start-button" style="margin-top: 20px">
+        次へ
+      </button>
+    </div>
+
+    <div id="resultScreen" class="card" style="display: none">
+      <div style="text-align: center">
+        <h1 id="finalScore" style="font-size: 4rem; color: #2e4a32; margin-bottom: 10px"></h1>
+
+        <h2 id="finalRank"></h2>
       </div>
 
-      <div id="resultScreen" class="card" style="display: none">
-        <div style="text-align: center">
-          <h1
-            id="finalScore"
-            style="font-size: 4rem; color: #2e4a32; margin-bottom: 10px"
-          ></h1>
+      <div id="finalCorrectCount" style="font-size: 1.3rem; margin-top: 20px; text-align: center"></div>
 
-          <h2 id="finalRank"></h2>
-        </div>
-
-        <div
-          id="finalCorrectCount"
-          style="font-size: 1.3rem; margin-top: 20px; text-align: center"
-        ></div>
-
-        <div
-          id="finalPosition"
-          style="
+      <div id="finalPosition" style="
             font-size: 1.4rem;
             margin-top: 15px;
             text-align: center;
             font-weight: bold;
-          "
-        ></div>
+          "></div>
 
-        <hr style="margin: 30px 0" />
+      <hr style="margin: 30px 0" />
 
-        <h2 class="ranking-title">🏆 トップ５ 🏆</h2>
+      <h2 class="ranking-title">🏆 トップ５ 🏆</h2>
 
-        <div id="resultRanking"></div>
+      <div id="resultRanking"></div>
 
-        <button
-          class="start-button"
-          style="margin-top: 20px"
-          onclick="location.reload()"
-        >
-          もう一度挑戦
-        </button>
-      </div>
-
-      <div class="footer">Quality Quiz 2026</div>
+      <button class="start-button" style="margin-top: 20px" onclick="location.reload()">
+        もう一度挑戦
+      </button>
     </div>
 
-    <script>
-      const API_URL =
-        "https://script.google.com/macros/s/AKfycbxO2uom691H4-LJO6eIUxV440FRb5QM1JmQU0VF9YlzfeztqOr665lZSnuh_eXo69Y-ug/exec";
+    <div class="footer">Quality Quiz 2026</div>
+  </div>
 
-      let allQuestions = [];
-      let currentQuestionIndex = 0;
-      let score = 0;
-      let correctCount = 0;
-      let startedAt = null;
+  <script>
+    const API_URL =
+      "https://script.google.com/macros/s/AKfycbxO2uom691H4-LJO6eIUxV440FRb5QM1JmQU0VF9YlzfeztqOr665lZSnuh_eXo69Y-ug/exec";
 
-      window.onload = async function () {
-        try {
-          const response = await fetch(API_URL + "?mode=ranking");
+    let allQuestions = [];
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let correctCount = 0;
+    let startedAt = null;
 
-          const ranking = await response.json();
+    window.onload = async function () {
+      try {
+        const response = await fetch(API_URL + "?mode=ranking");
 
-          renderRanking(ranking);
-        } catch (error) {
-          console.error(error);
+        const ranking = await response.json();
 
-          document.getElementById("ranking").innerHTML = "ランキング取得失敗";
+        renderRanking(ranking);
+      } catch (error) {
+        console.error(error);
+
+        document.getElementById("ranking").innerHTML = "ランキング取得失敗";
+      }
+    };
+
+    function renderRanking(ranking) {
+      const medals = ["🥇", "🥈", "🥉"];
+
+      let html = "";
+
+      ranking.forEach((item, index) => {
+        let rankLabel;
+
+        if (index < 3) {
+          rankLabel = medals[index] + " " + item.nickname;
+        } else {
+          rankLabel = index + 1 + "位 " + item.nickname;
         }
-      };
 
-      function renderRanking(ranking) {
-        const medals = ["🥇", "🥈", "🥉"];
-
-        let html = "";
-
-        ranking.forEach((item, index) => {
-          let rankLabel;
-
-          if (index < 3) {
-            rankLabel = medals[index] + " " + item.nickname;
-          } else {
-            rankLabel = index + 1 + "位 " + item.nickname;
-          }
-
-          html += `
+        html += `
             <div class="rank-row">
                 <span class="rank-name">
                     ${rankLabel}
@@ -313,48 +293,48 @@
                 </span>
             </div>
         `;
-        });
+      });
 
-        document.getElementById("ranking").innerHTML = html;
-      }
+      document.getElementById("ranking").innerHTML = html;
+    }
 
-      function updateProgressBar() {
-        const total = allQuestions.length;
+    function updateProgressBar(completed) {
+      // 出題総数は冒頭の設定から算出し、画面には表示しない。
+      const total = Object.values(QUIZ_CONFIG)
+        .reduce((sum, config) => sum + config.count, 0);
+      const percent = total > 0
+        ? (Math.min(Math.max(completed, 0), total) / total) * 100
+        : 0;
 
-        const percent = ((currentQuestionIndex + 1) / total) * 100;
+      document.getElementById("progressBar").style.width = percent + "%";
+    }
 
-        document.getElementById("progressBar").style.width = percent + "%";
+    function showChoices(question) {
+      const choices = [
+        {
+          key: "A",
+          text: question.choiceA,
+        },
+        {
+          key: "B",
+          text: question.choiceB,
+        },
+        {
+          key: "C",
+          text: question.choiceC,
+        },
+        {
+          key: "D",
+          text: question.choiceD,
+        },
+      ];
 
-        document.getElementById("questionNumber").innerText =
-          "問題 " + (currentQuestionIndex + 1);
-      }
+      choices.sort(() => Math.random() - 0.5);
 
-      function showChoices(question) {
-        const choices = [
-          {
-            key: "A",
-            text: question.choiceA,
-          },
-          {
-            key: "B",
-            text: question.choiceB,
-          },
-          {
-            key: "C",
-            text: question.choiceC,
-          },
-          {
-            key: "D",
-            text: question.choiceD,
-          },
-        ];
+      let html = "";
 
-        choices.sort(() => Math.random() - 0.5);
-
-        let html = "";
-
-        choices.forEach((choice) => {
-          html += `
+      choices.forEach((choice) => {
+        html += `
                     <button
                         class="choice-button"
                         onclick="answerQuestion(
@@ -367,28 +347,28 @@
 
                     </button>
                 `;
-        });
+      });
 
-        document.getElementById("choicesContainer").innerHTML = html;
+      document.getElementById("choicesContainer").innerHTML = html;
+    }
+
+    function answerQuestion(selectedKey, selectedText) {
+      const question = allQuestions[currentQuestionIndex];
+
+      document.getElementById("choicesContainer").style.display = "none";
+
+      document.getElementById("answerArea").style.display = "block";
+
+      if (selectedKey === "A") {
+        score += QUIZ_CONFIG[question.level].points;
+        correctCount++;
+
+        document.getElementById("answerTitle").innerHTML = "✨ 正解！ ✨";
+      } else {
+        document.getElementById("answerTitle").innerHTML = "💦 不正解";
       }
 
-      function answerQuestion(selectedKey, selectedText) {
-        const question = allQuestions[currentQuestionIndex];
-
-        document.getElementById("choicesContainer").style.display = "none";
-
-        document.getElementById("answerArea").style.display = "block";
-
-        if (selectedKey === "A") {
-          score += QUIZ_CONFIG[question.level].points;
-          correctCount++;
-
-          document.getElementById("answerTitle").innerHTML = "✨ 正解！ ✨";
-        } else {
-          document.getElementById("answerTitle").innerHTML = "💦 不正解";
-        }
-
-        document.getElementById("answerText").innerHTML = `
+      document.getElementById("answerText").innerHTML = `
           <div>
               <b>あなたの回答</b><br>
               ${selectedText}
@@ -401,71 +381,71 @@
               ${question.explanation}
           </div>
           `;
+    }
+
+    function getRankTitle(score) {
+      if (score >= 90) {
+        return "👑 品質マスター";
       }
 
-      function getRankTitle(score) {
-        if (score >= 90) {
-          return "👑 品質マスター";
-        }
-
-        if (score >= 80) {
-          return "🌟 品質エキスパート";
-        }
-
-        if (score >= 60) {
-          return "✨ 品質チャレンジャー";
-        }
-
-        return "📚 品質ビギナー";
+      if (score >= 80) {
+        return "🌟 品質エキスパート";
       }
 
-      function saveResult() {
-        const employeeId = sessionStorage.getItem("employeeId");
-
-        const nickname = sessionStorage.getItem("nickname");
-
-        const finishedAt = new Date().toISOString();
-
-        const url =
-          API_URL +
-          "?mode=save" +
-          "&employeeId=" +
-          encodeURIComponent(employeeId) +
-          "&nickname=" +
-          encodeURIComponent(nickname) +
-          "&score=" +
-          score +
-          "&correctCount=" +
-          correctCount +
-          "&startedAt=" +
-          encodeURIComponent(startedAt) +
-          "&finishedAt=" +
-          encodeURIComponent(finishedAt);
-
-        const img = new Image();
-
-        img.src = url;
+      if (score >= 60) {
+        return "✨ 品質チャレンジャー";
       }
 
-      async function showResultRanking() {
-        const response = await fetch(API_URL + "?mode=ranking");
+      return "📚 品質ビギナー";
+    }
 
-        const ranking = await response.json();
+    function saveResult() {
+      const employeeId = sessionStorage.getItem("employeeId");
 
-        const myNickname = sessionStorage.getItem("nickname");
+      const nickname = sessionStorage.getItem("nickname");
 
-        let html = "";
+      const finishedAt = new Date().toISOString();
 
-        const medals = ["🥇", "🥈", "🥉"];
+      const url =
+        API_URL +
+        "?mode=save" +
+        "&employeeId=" +
+        encodeURIComponent(employeeId) +
+        "&nickname=" +
+        encodeURIComponent(nickname) +
+        "&score=" +
+        score +
+        "&correctCount=" +
+        correctCount +
+        "&startedAt=" +
+        encodeURIComponent(startedAt) +
+        "&finishedAt=" +
+        encodeURIComponent(finishedAt);
 
-        ranking.forEach((item, index) => {
-          const rankLabel = index < 3 ? medals[index] : index + 1 + "位";
+      const img = new Image();
 
-          const myEmployeeId = sessionStorage.getItem("employeeId");
+      img.src = url;
+    }
 
-          const isMe = item.employeeId === myEmployeeId;
+    async function showResultRanking() {
+      const response = await fetch(API_URL + "?mode=ranking");
 
-          html += `
+      const ranking = await response.json();
+
+      const myNickname = sessionStorage.getItem("nickname");
+
+      let html = "";
+
+      const medals = ["🥇", "🥈", "🥉"];
+
+      ranking.forEach((item, index) => {
+        const rankLabel = index < 3 ? medals[index] : index + 1 + "位";
+
+        const myEmployeeId = sessionStorage.getItem("employeeId");
+
+        const isMe = item.employeeId === myEmployeeId;
+
+        html += `
           <div class="rank-row ${isMe ? "my-rank" : ""}">
               <span class="rank-name">
                   ${rankLabel}
@@ -478,137 +458,140 @@
               </span>
           </div>
       `;
-        });
+      });
 
-        document.getElementById("resultRanking").innerHTML = html;
+      document.getElementById("resultRanking").innerHTML = html;
+    }
+
+    async function startQuiz() {
+      const employeeId = document.getElementById("employeeId").value.trim();
+
+      const nickname = document.getElementById("nickname").value.trim();
+
+      if (!employeeId || !nickname) {
+        alert("社員番号とニックネームを入力してください");
+
+        return;
       }
 
-      async function startQuiz() {
-        const employeeId = document.getElementById("employeeId").value.trim();
+      startedAt = new Date();
 
-        const nickname = document.getElementById("nickname").value.trim();
+      sessionStorage.setItem("employeeId", employeeId);
 
-        if (!employeeId || !nickname) {
-          alert("社員番号とニックネームを入力してください");
+      sessionStorage.setItem("nickname", nickname);
 
-          return;
-        }
+      document.getElementById("startCard").style.display = "none";
 
-        startedAt = new Date();
+      document.getElementById("rankingCard").style.display = "none";
 
-        sessionStorage.setItem("employeeId", employeeId);
+      document.getElementById("quizScreen").style.display = "block";
 
-        sessionStorage.setItem("nickname", nickname);
+      try {
+        const response = await fetch(API_URL + "?mode=questions");
 
-        document.getElementById("startCard").style.display = "none";
+        allQuestions = await response.json();
 
-        document.getElementById("rankingCard").style.display = "none";
-
-        document.getElementById("quizScreen").style.display = "block";
-
-        try {
-          const response = await fetch(API_URL + "?mode=questions");
-
-          allQuestions = await response.json();
-
-          // 難易度ごとに指定件数をランダム抽出する。
-          const selectedQuestions = [];
-          for (const [level, config] of Object.entries(QUIZ_CONFIG)) {
-            const candidates = allQuestions.filter((q) => q.level === level);
-            if (candidates.length < config.count) {
-              throw new Error(`${level}の問題が不足しています（必要${config.count}問、取得${candidates.length}問）`);
-            }
-            selectedQuestions.push(
-              ...candidates.sort(() => Math.random() - 0.5).slice(0, config.count)
-            );
+        // 難易度ごとに指定件数をランダム抽出する。
+        const selectedQuestions = [];
+        for (const [level, config] of Object.entries(QUIZ_CONFIG)) {
+          const candidates = allQuestions.filter((q) => q.level === level);
+          if (candidates.length < config.count) {
+            throw new Error(`${level}の問題が不足しています（必要${config.count}問、取得${candidates.length}問）`);
           }
-          if (selectedQuestions.length === 0) {
-            throw new Error("出題数が0問です。QUIZ_CONFIGを確認してください。");
-          }
-          allQuestions = selectedQuestions;
-
-          updateProgressBar();
-
-          document.getElementById("questionText").innerText =
-            allQuestions[0].question;
-          showChoices(allQuestions[0]);
-        } catch (error) {
-          alert("問題取得失敗");
-
-          console.error(error);
+          selectedQuestions.push(
+            ...candidates.sort(() => Math.random() - 0.5).slice(0, config.count)
+          );
         }
+        if (selectedQuestions.length === 0) {
+          throw new Error("出題数が0問です。QUIZ_CONFIGを確認してください。");
+        }
+        allQuestions = selectedQuestions;
+
+        updateProgressBar(1);
+        document.getElementById("questionNumber").innerText = "問題 1";
+
+        document.getElementById("questionText").innerText =
+          allQuestions[0].question;
+        showChoices(allQuestions[0]);
+      } catch (error) {
+        alert("問題取得失敗");
+
+        console.error(error);
+      }
+    }
+
+    document.addEventListener("click", async function (e) {
+      if (e.target.id !== "nextButton") {
+        return;
       }
 
-      document.addEventListener("click", async function (e) {
-        if (e.target.id !== "nextButton") {
-          return;
-        }
+      currentQuestionIndex++;
 
-        currentQuestionIndex++;
+      if (currentQuestionIndex >= allQuestions.length) {
+        //          try {
+        //            await saveResult();
+        //          } catch (error) {
+        //            console.error(error);
+        //          }
 
-        updateProgressBar();
+        saveResult();
 
-        if (currentQuestionIndex >= allQuestions.length) {
-          //          try {
-          //            await saveResult();
-          //          } catch (error) {
-          //            console.error(error);
-          //          }
+        await new Promise((resolve) => setTimeout(resolve, 1000));
 
-          saveResult();
-
-          await new Promise((resolve) => setTimeout(resolve, 1000));
-
-          document.getElementById("quizScreen").style.display = "none";
-
-          document.getElementById("answerArea").style.display = "none";
-
-          document.getElementById("resultScreen").style.display = "block";
-
-          document.getElementById("finalScore").innerText = score + "点";
-
-          document.getElementById("finalRank").innerText = getRankTitle(score);
-
-          document.getElementById("finalCorrectCount").innerText =
-            correctCount + "問正解";
-
-          showResultRanking();
-          showMyRank();
-
-          return;
-        }
+        document.getElementById("quizScreen").style.display = "none";
 
         document.getElementById("answerArea").style.display = "none";
 
-        document.getElementById("choicesContainer").style.display = "block";
+        document.getElementById("resultScreen").style.display = "block";
 
-        document.getElementById("questionText").innerText =
-          allQuestions[currentQuestionIndex].question;
+        document.getElementById("finalScore").innerText = score + "点";
 
-        showChoices(allQuestions[currentQuestionIndex]);
-      });
+        document.getElementById("finalRank").innerText = getRankTitle(score);
 
-      async function showMyRank() {
-        const employeeId = sessionStorage.getItem("employeeId");
+        document.getElementById("finalCorrectCount").innerText =
+          correctCount + "問正解";
 
-        const finishedAt = new Date().toISOString();
+        showResultRanking();
+        showMyRank();
 
-        const response = await fetch(
-          API_URL +
-            "?mode=rank" +
-            "&employeeId=" +
-            encodeURIComponent(employeeId) +
-            "&score=" +
-            score +
-            "&finishedAt=" +
-            encodeURIComponent(finishedAt),
-        );
-
-        const result = await response.json();
-
-        document.getElementById("finalPosition").innerText =
-          "現在 " + result.rank + "位";
+        return;
       }
-    </script>
-  </body>
+
+      document.getElementById("answerArea").style.display = "none";
+
+      document.getElementById("choicesContainer").style.display = "block";
+
+      updateProgressBar(currentQuestionIndex + 1);
+      document.getElementById("questionNumber").innerText =
+        "問題 " + (currentQuestionIndex + 1);
+      document.getElementById("questionText").innerText =
+        allQuestions[currentQuestionIndex].question;
+
+      showChoices(allQuestions[currentQuestionIndex]);
+    });
+
+    async function showMyRank() {
+      const employeeId = sessionStorage.getItem("employeeId");
+
+      const finishedAt = new Date().toISOString();
+
+      const response = await fetch(
+        API_URL +
+        "?mode=rank" +
+        "&employeeId=" +
+        encodeURIComponent(employeeId) +
+        "&score=" +
+        score +
+        "&finishedAt=" +
+        encodeURIComponent(finishedAt),
+      );
+
+      const result = await response.json();
+
+      document.getElementById("finalPosition").innerText =
+        "現在 " + result.rank + "位";
+    }
+  </script>
+</body>
+
 </html>
