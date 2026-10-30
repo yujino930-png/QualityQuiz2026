@@ -204,6 +204,8 @@ body{
 const API_URL =
 "https://script.google.com/macros/s/AKfycbxO2uom691H4-LJO6eIUxV440FRb5QM1JmQU0VF9YlzfeztqOr665lZSnuh_eXo69Y-ug/exec";
 
+let allQuestions = [];
+
 window.onload = async function () {
 
     try {
@@ -270,8 +272,8 @@ function renderRanking(ranking){
         .innerHTML = html;
 }
 
-function startQuiz(){
-
+function startQuiz(){async function startQuiz(){
+    
     const employeeId =
         document.getElementById("employeeId").value.trim();
 
@@ -307,15 +309,36 @@ function startQuiz(){
         "quizScreen"
     ).style.display = "block";
     
-    document.getElementById(
-        "progressBar"
-    ).innerText =
-        "■□□□□□□□□□□□□□□□□□□□";
+    try{
     
-    document.getElementById(
-        "questionText"
-    ).innerText =
-        "ここに問題を表示します";
+        const response =
+            await fetch(
+                API_URL + "?mode=questions"
+            );
+    
+        allQuestions =
+            await response.json();
+    
+        document.getElementById(
+            "progressBar"
+        ).innerText =
+            "■□□□□□□□□□□□□□□□□□□□";
+    
+        document.getElementById(
+            "questionText"
+        ).innerText =
+            allQuestions[0].question;
+    
+    }
+    catch(error){
+    
+        alert(
+            "問題取得失敗"
+        );
+    
+        console.error(error);
+    
+    }
 
 }
 
