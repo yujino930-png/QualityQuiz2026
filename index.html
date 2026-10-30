@@ -509,7 +509,11 @@
         updateProgressBar();
 
         if (currentQuestionIndex >= allQuestions.length) {
-          await saveResult();
+          try {
+            await saveResult();
+          } catch (error) {
+            console.error(error);
+          }
 
           document.getElementById("quizScreen").style.display = "none";
 
