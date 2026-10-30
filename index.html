@@ -6,6 +6,22 @@
 
     <title>品質クイズ 2026</title>
 
+    <!-- =====================================================
+         ★★★ クイズの設定はここだけ変更 ★★★
+         count  = 出題する問題数
+         points = 1問正解したときの得点
+         現在の満点：10×3 + 6×5 + 4×10 = 100点
+         ※称号の判定基準（90/80/60点）は固定です。
+         ===================================================== -->
+    <script>
+      const QUIZ_CONFIG = {
+        "初級": { count: 10, points: 3 },
+        "中級": { count: 6, points: 5 },
+        "上級": { count: 4, points: 10 },
+      };
+    </script>
+    <!-- ================= 設定ここまで ================= -->
+
     <style>
       :root {
         --qa-green: #7ed957;
@@ -364,7 +380,7 @@
         document.getElementById("answerArea").style.display = "block";
 
         if (selectedKey === "A") {
-          score += Number(question.point);
+          score += QUIZ_CONFIG[question.level].points;
           correctCount++;
 
           document.getElementById("answerTitle").innerHTML = "✨ 正解！ ✨";
@@ -495,22 +511,21 @@
 
           allQuestions = await response.json();
 
-          const beginner = allQuestions
-            .filter((q) => q.level === "初級")
-            .sort(() => Math.random() - 0.5)
-            .slice(0, 10);
-
-          const middle = allQuestions
-            .filter((q) => q.level === "中級")
-            .sort(() => Math.random() - 0.5)
-            .slice(0, 6);
-
-          const advanced = allQuestions
-            .filter((q) => q.level === "上級")
-            .sort(() => Math.random() - 0.5)
-            .slice(0, 4);
-
-          allQuestions = [...beginner, ...middle, ...advanced];
+          // 難易度ごとに指定件数をランダム抽出する。
+          const selectedQuestions = [];
+          for (const [level, config] of Object.entries(QUIZ_CONFIG)) {
+            const candidates = allQuestions.filter((q) => q.level === level);
+            if (candidates.length < config.count) {
+              throw new Error(`${level}の問題が不足しています（必要${config.count}問、取得${candidates.length}問）`);
+            }
+            selectedQuestions.push(
+              ...candidates.sort(() => Math.random() - 0.5).slice(0, config.count)
+            );
+          }
+          if (selectedQuestions.length === 0) {
+            throw new Error("出題数が0問です。QUIZ_CONFIGを確認してください。");
+          }
+          allQuestions = selectedQuestions;
 
           updateProgressBar();
 
